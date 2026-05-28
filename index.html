@@ -2334,7 +2334,52 @@ let gEditMode = false;
     document.getElementById('g-modal').classList.add('show');
   }
   function gCloseModal() { document.getElementById('g-modal').classList.remove('show'); gCurrentModalId = null; }
+function gOpenEdit() {
+    if (!gCurrentModalId) return;
+    const r = gRestaurants.find(x => x.id === gCurrentModalId);
+    if (!r) return;
 
+    gEditMode = true;
+    gEditId = r.id;
+
+    // フォームに既存の値をセット
+    document.getElementById('g-form-title').innerHTML = '✏️ お店情報を編集';
+    document.getElementById('g-f-name').value = r.name || '';
+    document.getElementById('g-f-link').value = r.link || '';
+    document.getElementById('g-f-pref').value = r.pref || '';
+    document.getElementById('g-f-area').value = r.area || '';
+    document.getElementById('g-f-recommender').value = r.recommender || '';
+    document.getElementById('g-f-comment').value = r.comment || '';
+    document.getElementById('g-f-price').value = r.price || '';
+
+    // カテゴリーの復元
+    document.querySelectorAll('#g-f-category .g-form-chip').forEach(c => {
+      c.classList.toggle('selected', c.dataset.val === r.category);
+    });
+    gFormState.category = r.category || '';
+
+    // シーンと理由の復元
+    document.querySelectorAll('#g-f-scenes .g-form-chip').forEach(c => {
+      c.classList.toggle('selected', (r.scenes || []).includes(c.dataset.val));
+    });
+    document.querySelectorAll('#g-f-reasons .g-form-chip').forEach(c => {
+      c.classList.toggle('selected', (r.reasons || []).includes(c.dataset.val));
+    });
+
+    // 評価と文字数カウントの復元
+    gSelectRating(r.rating || 0);
+    gUpdateCharCount();
+
+    // 写真の復元
+    gUploadedPhotos = r.photos ? [...r.photos] : [];
+    gRenderPhotoPreview();
+
+    // モーダルを閉じてタブを切り替え
+    gCloseModal();
+    gSwitchTab('add');
+    document.querySelector('.g-submit-btn').innerText = '更新する';
+  }
+    
   // ===== GALLERY =====
   let gGalleryIndex=0, gGalleryPhotos=[];
   function gRenderModalGallery(r) {
