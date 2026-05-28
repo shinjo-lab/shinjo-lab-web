@@ -1450,9 +1450,7 @@
 
           <div id="g-tab-add" class="g-tab-content">
             <div class="g-form-card">
-              <h3>&#127860; 新しいお店を登録</h3>
-              <form id="g-add-form" onsubmit="return gHandleSubmit(event)">
-                <div class="g-form-group">
+              <h3 id="g-form-title">&#127860; 新しいお店を登録</h3> <form id="g-add-form" onsubmit="return gHandleSubmit(event)">
                   <label>店名<span class="g-required">*</span></label>
                   <input type="text" class="g-form-input" id="g-f-name" required placeholder="例：焼肉太郎">
                 </div>
@@ -1584,6 +1582,7 @@
           </div>
           <div id="g-m-link-section" style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
             <a id="g-m-link" href="#" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:#3f704c;color:#fff;border-radius:12px;text-decoration:none;font-weight:700;font-size:.9rem">&#128279; お店のページへ</a>
+            <button onclick="gOpenEdit()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:#fff;color:#5b9466;border:2px solid #5b9466;border-radius:12px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='#f4f8f4'" onmouseout="this.style.background='#fff'">✏️ 編集する</button>
             <button onclick="gDeleteRestaurant()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:#fff;color:#e53e3e;border:2px solid #e53e3e;border-radius:12px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='#fff5f5'" onmouseout="this.style.background='#fff'">&#128465; 削除する</button>
           </div>
           <div class="g-comments-section">
