@@ -2517,8 +2517,7 @@ function gOpenEdit() {
     } else { container.querySelector(`[data-val="${val}"]`).classList.add('selected'); }
     inp.value='';
   }
-
-  async function gHandleSubmit(e){
+async function gHandleSubmit(e){
     e.preventDefault();
     const name=document.getElementById('g-f-name').value.trim();
     const link=document.getElementById('g-f-link').value.trim();
@@ -2540,19 +2539,27 @@ function gOpenEdit() {
     submitBtn.style.opacity = '0.7';
 
     try {
-      const newRestaurant = {
-        id: Date.now() + Math.floor(Math.random() * 1000), 
+      const oldData = gEditMode ? gRestaurants.find(x => x.id === gEditId) : null;
+      
+      const saveData = {
+        id: gEditMode ? gEditId : Date.now() + Math.floor(Math.random() * 1000), 
         name, link, pref, area, category, recommender, comment, scenes, reasons, price,
-        rating: gFormState.rating, likes: 0,
+        rating: gFormState.rating, 
+        likes: gEditMode ? oldData.likes : 0,
         photos: [...gUploadedPhotos],
-        comments: [],
-        createdAt: new Date().toISOString()
+        comments: gEditMode ? oldData.comments : [],
+        createdAt: gEditMode ? oldData.createdAt : new Date().toISOString()
       };
       
-      // Supabaseへ送信
-      await gSaveToSheet(newRestaurant);
+      // 新規か編集かで送信先を変える
+      if (gEditMode) {
+        await gUpdateToSheet(saveData);
+      } else {
+        await gSaveToSheet(saveData);
+      }
       
       document.getElementById('g-add-form').style.display='none';
+      document.getElementById('g-success-msg').innerHTML = `<div class="g-check">&#9989;</div><div>${gEditMode ? '更新' : '登録'}しました！</div><button class="g-tab-btn" style="margin-top:16px" onclick="gResetForm()">戻る</button>`;
       document.getElementById('g-success-msg').style.display='block';
       
       setTimeout(() => {
@@ -2572,14 +2579,19 @@ function gOpenEdit() {
   }
   
   function gResetForm(){
+    gEditMode = false;
+    gEditId = null;
+    document.getElementById('g-form-title').innerHTML = '&#127860; 新しいお店を登録';
+    document.querySelector('.g-submit-btn').innerText = '登録する';
+    
     document.getElementById('g-add-form').reset();document.getElementById('g-add-form').style.display='block';
     document.getElementById('g-success-msg').style.display='none';gFormState={category:'',rating:0};
     document.querySelectorAll('#g-tab-add .g-form-chip').forEach(c=>c.classList.remove('selected'));
     document.querySelectorAll('.g-rating-dot').forEach(d=>d.classList.remove('filled'));
     document.getElementById('g-char-count').textContent='0 / 50';gUploadedPhotos=[];gRenderPhotoPreview();
+    gSwitchTab('browse'); // リセット後は一覧に戻る
   }
-
-  // ===== REFRESH =====
+    // ===== REFRESH =====
   function gRefreshData() { gLoadFromSheet(); }
 
   function gEsc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
