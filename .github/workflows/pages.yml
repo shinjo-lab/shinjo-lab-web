@@ -18,7 +18,8 @@ concurrency:
 jobs:
   publish:
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     permissions:
       contents: read
       pages: write
@@ -37,6 +38,7 @@ jobs:
           cp index.html CNAME _site/
           cp -R assets content images _site/
           touch _site/.nojekyll
+          printf '{"commit":"%s"}\n' "$GITHUB_SHA" > _site/deployment.json
       - name: Upload public site
         uses: actions/upload-pages-artifact@v4
         with:
