@@ -1,4 +1,5 @@
 import {createRequire} from 'node:module';
+import {randomUUID} from 'node:crypto';
 const require = createRequire(import.meta.url);
 const renderer = require('../assets/content.js');
 export const repository = 'shinjo-lab/shinjo-lab-web';
@@ -89,11 +90,14 @@ export function createRepositoryClient(token,branch,fetcher=fetch){
     const html=snapshot(await text('index.html',before),data);
     const entries=groups.map(g=>({path:'content/'+g+'.json',mode:'100644',type:'blob',content:JSON.stringify({items:data[g]},null,2)+'\n'}));
     entries.push({path:'index.html',mode:'100644',type:'blob',content:html});
+    // A save also retries publication when the editable content is unchanged.
+    const revision=randomUUID();
+    entries.push({path:'content/revision.json',mode:'100644',type:'blob',content:JSON.stringify({revision})+'\n'});
     for(const file of uploads){const blob=await api(base+'/git/blobs','POST',{content:file.base64,encoding:'base64'});entries.push({path:file.path,mode:'100644',type:'blob',sha:blob.sha});}
     const tree=await api(base+'/git/trees','POST',{base_tree:commit.tree.sha,tree:entries});
     const next=await api(base+'/git/commits','POST',{message:'Update lab members and news from visual editor',tree:tree.sha,parents:[before]});
     await api(base+'/git/refs/heads/'+branch.split('/').map(encodeURIComponent).join('/'),'PATCH',{sha:next.sha,force:false});
-    return {head:next.sha,branch,url:`https://github.com/${repository}/commit/${next.sha}`};
+    return {head:next.sha,branch,revision,url:`https://github.com/${repository}/commit/${next.sha}`};
   }
   return {api,read,save,authorize};
 }

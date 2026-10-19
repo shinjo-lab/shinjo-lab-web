@@ -5,7 +5,7 @@ import {validateContent,validateUploads,snapshot,createRepositoryClient} from '.
 const data={};for(const g of ['students','staff','alumni','news'])data[g]=JSON.parse(await readFile(new URL('../../content/'+g+'.json',import.meta.url),'utf8')).items;
 const html=await readFile(new URL('../../index.html',import.meta.url),'utf8');
 test('valid content survives validation, missing names and unsafe links are rejected',()=>{
- assert.equal(validateContent(data).students.length,24);
+ assert.equal(validateContent(data).students.length,data.students.length);
  const missing=structuredClone(data);missing.students[0].name=' ';assert.throws(()=>validateContent(missing));
  const xss=structuredClone(data);xss.news[0].url='javascript:alert(1)';assert.throws(()=>validateContent(xss));
  const date=structuredClone(data);date.news[0].date='2026-02-31';assert.throws(()=>validateContent(date));
@@ -49,6 +49,8 @@ test('save commits JSON, static fallback, and photos together then fast-forwards
   return {ok:true,json:async()=>result};
  });
  const result=await client.save({head:ref,data,uploads:[]});assert.equal(result.head,'b'.repeat(40));
- assert.equal(entries.length,5);assert.ok(entries.some(x=>x.path==='index.html'));assert.ok(entries.some(x=>x.path==='content/students.json'));
+ assert.equal(entries.length,6);assert.ok(entries.some(x=>x.path==='index.html'));assert.ok(entries.some(x=>x.path==='content/students.json'));
+ const publishedRevision=JSON.parse(entries.find(x=>x.path==='content/revision.json').content).revision;
+ assert.match(publishedRevision,/^[a-f0-9-]{36}$/);assert.equal(result.revision,publishedRevision);
  assert.equal(calls.at(-1)[1].method,'PATCH');
 });
