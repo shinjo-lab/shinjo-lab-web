@@ -9,22 +9,13 @@ concurrency:
   group: lab-production-pages
   cancel-in-progress: true
 jobs:
-  publish:
+  build:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: lab-production
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout published branch
         uses: actions/checkout@v6
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
       - name: Prepare public files
         run: |
           mkdir _site
@@ -36,6 +27,20 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: lab-production
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
       - name: Deploy public site
         id: deployment
         uses: actions/deploy-pages@v4
