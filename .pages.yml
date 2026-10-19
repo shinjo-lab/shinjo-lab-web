@@ -1,0 +1,352 @@
+{
+  "media": {
+    "input": "images",
+    "output": "/images",
+    "rename": "random",
+    "extensions": [
+      "jpg",
+      "jpeg",
+      "png",
+      "webp",
+      "gif"
+    ]
+  },
+  "content": [
+    {
+      "name": "students",
+      "label": "学生",
+      "type": "file",
+      "path": "content/students.json",
+      "format": "json",
+      "fields": [
+        {
+          "name": "items",
+          "label": "学生",
+          "type": "object",
+          "list": {
+            "collapsible": {
+              "collapsed": true,
+              "summary": "{name} / {role}"
+            }
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": "氏名（日本語）",
+              "type": "string",
+              "required": true
+            },
+            {
+              "name": "name_en",
+              "label": "氏名（英語・任意）",
+              "type": "string"
+            },
+            {
+              "name": "role",
+              "label": "学年・役職（日本語）",
+              "type": "string"
+            },
+            {
+              "name": "role_en",
+              "label": "学年・役職（英語・任意）",
+              "type": "string"
+            },
+            {
+              "name": "photo",
+              "label": "プロフィール写真",
+              "type": "image"
+            },
+            {
+              "name": "photo_position",
+              "label": "写真の表示位置",
+              "type": "select",
+              "default": "center",
+              "options": {
+                "values": [
+                  {
+                    "name": "center",
+                    "label": "中央"
+                  },
+                  {
+                    "name": "top",
+                    "label": "上寄せ"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "bio",
+              "label": "紹介文（日本語・任意）",
+              "type": "text"
+            },
+            {
+              "name": "bio_en",
+              "label": "紹介文（英語・任意）",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "staff",
+      "label": "教員・スタッフ",
+      "type": "file",
+      "path": "content/staff.json",
+      "format": "json",
+      "fields": [
+        {
+          "name": "items",
+          "label": "教員・スタッフ",
+          "type": "object",
+          "list": {
+            "collapsible": {
+              "collapsed": true,
+              "summary": "{name} / {role}"
+            }
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": "氏名（日本語）",
+              "type": "string",
+              "required": true
+            },
+            {
+              "name": "name_en",
+              "label": "氏名（英語・任意）",
+              "type": "string"
+            },
+            {
+              "name": "role",
+              "label": "学年・役職（日本語）",
+              "type": "string"
+            },
+            {
+              "name": "role_en",
+              "label": "学年・役職（英語・任意）",
+              "type": "string"
+            },
+            {
+              "name": "photo",
+              "label": "プロフィール写真",
+              "type": "image"
+            },
+            {
+              "name": "photo_position",
+              "label": "写真の表示位置",
+              "type": "select",
+              "default": "center",
+              "options": {
+                "values": [
+                  {
+                    "name": "center",
+                    "label": "中央"
+                  },
+                  {
+                    "name": "top",
+                    "label": "上寄せ"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "bio",
+              "label": "紹介文（日本語・任意）",
+              "type": "text"
+            },
+            {
+              "name": "bio_en",
+              "label": "紹介文（英語・任意）",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "alumni",
+      "label": "卒業生",
+      "type": "file",
+      "path": "content/alumni.json",
+      "format": "json",
+      "fields": [
+        {
+          "name": "items",
+          "label": "卒業生",
+          "type": "object",
+          "list": {
+            "collapsible": {
+              "collapsed": true,
+              "summary": "{name}"
+            }
+          },
+          "fields": [
+            {
+              "name": "name",
+              "label": "氏名（日本語）",
+              "type": "string",
+              "required": true
+            },
+            {
+              "name": "name_en",
+              "label": "氏名（英語・任意）",
+              "type": "string"
+            },
+            {
+              "name": "role",
+              "label": "学年・役職（日本語）",
+              "type": "string"
+            },
+            {
+              "name": "role_en",
+              "label": "学年・役職（英語・任意）",
+              "type": "string"
+            },
+            {
+              "name": "photo",
+              "label": "プロフィール写真",
+              "type": "image"
+            },
+            {
+              "name": "photo_position",
+              "label": "写真の表示位置",
+              "type": "select",
+              "default": "center",
+              "options": {
+                "values": [
+                  {
+                    "name": "center",
+                    "label": "中央"
+                  },
+                  {
+                    "name": "top",
+                    "label": "上寄せ"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "bio",
+              "label": "紹介文（日本語・任意）",
+              "type": "text"
+            },
+            {
+              "name": "bio_en",
+              "label": "紹介文（英語・任意）",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "news",
+      "label": "ニュース",
+      "type": "file",
+      "path": "content/news.json",
+      "format": "json",
+      "fields": [
+        {
+          "name": "items",
+          "label": "ニュース",
+          "type": "object",
+          "list": {
+            "collapsible": {
+              "collapsed": true,
+              "summary": "{date} / {title}"
+            }
+          },
+          "fields": [
+            {
+              "name": "title",
+              "label": "記事タイトル（日本語）",
+              "type": "string",
+              "required": true
+            },
+            {
+              "name": "title_en",
+              "label": "記事タイトル（英語・任意）",
+              "type": "string"
+            },
+            {
+              "name": "date",
+              "label": "掲載日",
+              "type": "date",
+              "required": true,
+              "options": {
+                "format": "yyyy-MM-dd"
+              }
+            },
+            {
+              "name": "categories",
+              "label": "カテゴリ（複数選択可）",
+              "type": "select",
+              "required": true,
+              "default": [
+                "news"
+              ],
+              "options": {
+                "multiple": true,
+                "values": [
+                  {
+                    "name": "news",
+                    "label": "お知らせ"
+                  },
+                  {
+                    "name": "media",
+                    "label": "メディア"
+                  },
+                  {
+                    "name": "publication",
+                    "label": "論文・発表"
+                  },
+                  {
+                    "name": "project",
+                    "label": "プロジェクト"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "body",
+              "label": "本文（日本語）",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "body_en",
+              "label": "本文（英語・任意）",
+              "type": "text"
+            },
+            {
+              "name": "photo",
+              "label": "記事の写真（任意）",
+              "type": "image"
+            },
+            {
+              "name": "photo_alt",
+              "label": "写真の説明（任意）",
+              "type": "string"
+            },
+            {
+              "name": "url",
+              "label": "外部リンク（任意・https://から入力）",
+              "type": "string"
+            },
+            {
+              "name": "link_label",
+              "label": "リンクの表示文（日本語・任意）",
+              "type": "string"
+            },
+            {
+              "name": "link_label_en",
+              "label": "リンクの表示文（英語・任意）",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

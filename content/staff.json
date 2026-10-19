@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "name": "信朝 裕行",
+      "name_en": "Hiroyuki Nobutomo",
+      "role": "特任准教授",
+      "role_en": "Project Assoc. Professor",
+      "photo": "/images/1.JPG",
+      "photo_position": "center",
+      "bio": "東京大学工学部卒。\n三菱総合研究所、電通等にて新規事業開発や戦略立案を指揮。\n2015年より内閣官房 IT戦略室にてIT利活用戦略推進官等を歴任し、官民データ連携基盤構築を推進。\n2019年4月より慶應義塾大学 特任准教授。\nデジタル庁設立を見据えたDX支援やルール策定にも従事。",
+      "bio_en": "B.Eng., The University of Tokyo.\nLed business dev. and strategic planning at MRI and Dentsu.\nSince 2015, promoted IT strategies and public-private data collaboration at the Cabinet Secretariat.\nSince Apr 2019, Project Assoc. Prof. at Keio Univ.\nEngaged in DX support and policy making toward the establishment of the Digital Agency."
+    },
+    {
+      "name": "島津 秀雄",
+      "name_en": "Hideo Shimazu",
+      "role": "上席所員",
+      "role_en": "Senior Researcher",
+      "photo": "/images/38.jpg",
+      "photo_position": "center",
+      "bio": "慶應義塾大学院理工学研究科を修了後、日本電気（NEC）で人工知能やナレッジマネジメントの研究を遂行。\n2014年から、NECソリューションイノベータで研究開発の担当役員。応用分野の1つとしてスマート農業に注力。\n2018年から5年間、慶應義塾大学の特任教授（非常勤）。現在、静岡市役所で農業政策監とAOI機構を兼職。\n2003年に慶應義塾大学にて博士（政策・メディア）取得",
+      "bio_en": "After completing the Graduate School of Science and Technology at Keio University, conducted research on AI and knowledge management at NEC.\nFrom 2014, Executive in charge of R&D at NEC Solution Innovators, focusing on smart agriculture.\nServed as a part-time Project Professor at Keio University for 5 years from 2018. Currently serves as Agricultural Policy Director at Shizuoka City Hall and at the AOI Organization.\nReceived Ph.D. (Media and Governance) from Keio University in 2003."
+    },
+    {
+      "name": "長尾 たつき",
+      "name_en": "Tatsuki Nagao",
+      "role": "所員",
+      "role_en": "Researcher",
+      "photo": "/images/2.jpg",
+      "photo_position": "center",
+      "bio": "2008-2014 株式会社Route Vigor\n2011-2014 JOC医科学スタッフ\n2014-2023 株式会社T.C.PLACE 取締役\n2024- GARAGE株式会社 代表取締役",
+      "bio_en": "2008-2014: Route Vigor Inc.\n2011-2014: JOC Medical Science Staff\n2014-2023: Director, T.C.PLACE Inc.\n2024-Present: CEO, GARAGE Inc."
+    }
+  ]
+}

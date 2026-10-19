@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "name": "緒方 遥人",
+      "name_en": "Haruto Ogata",
+      "role": "卒業生",
+      "role_en": "Alumni",
+      "photo": "/images/20ogata.jpg",
+      "photo_position": "center",
+      "bio": "",
+      "bio_en": ""
+    },
+    {
+      "name": "片山 太治朗",
+      "name_en": "Tajiro Katayama",
+      "role": "卒業生",
+      "role_en": "Alumni",
+      "photo": "/images/7.JPG",
+      "photo_position": "top",
+      "bio": "",
+      "bio_en": ""
+    },
+    {
+      "name": "小林 雪音",
+      "name_en": "Yukine Kobayashi",
+      "role": "卒業生",
+      "role_en": "Alumni",
+      "photo": "/images/8.JPG",
+      "photo_position": "center",
+      "bio": "",
+      "bio_en": ""
+    }
+  ]
+}
