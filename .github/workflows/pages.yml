@@ -2,18 +2,11 @@ name: Publish lab website
 on:
   push:
     branches: [main]
-    paths:
-      - index.html
-      - assets/**
-      - content/**
-      - images/**
-      - CNAME
-      - .github/workflows/pages.yml
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: lab-pages
+  group: lab-production-pages
   cancel-in-progress: true
 jobs:
   publish:
