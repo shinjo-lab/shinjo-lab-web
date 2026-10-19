@@ -1,0 +1,46 @@
+name: Publish lab website
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - assets/**
+      - content/**
+      - images/**
+      - CNAME
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: lab-pages
+  cancel-in-progress: true
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout published branch
+        uses: actions/checkout@v6
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Prepare public files
+        run: |
+          mkdir _site
+          cp index.html CNAME _site/
+          cp -R assets content images _site/
+          touch _site/.nojekyll
+      - name: Upload public site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy public site
+        id: deployment
+        uses: actions/deploy-pages@v4
