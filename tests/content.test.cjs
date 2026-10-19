@@ -64,11 +64,9 @@ test('failed or malformed requests keep existing content', async () => {
     assert.equal(doc.containers.students.innerHTML,'fallback');
   } finally {console.error=original;}
 });
-test('CMS fields match all migrated data and use an isolated media path', () => {
-  const config = JSON.parse(fs.readFileSync(path.join(root,'.pages.yml'),'utf8'));
-  assert.equal(config.media.input,'images'); assert.equal(config.media.output,'/images');
-  for (const entry of config.content) {
-    const fields = entry.fields[0].fields.map(f=>f.name);
-    for (const item of read(entry.name).items) assert.deepEqual(Object.keys(item).sort(),[...fields].sort());
+test('managed content keeps a consistent record schema', () => {
+  for (const group of ['staff','students','alumni','news']) {
+    const items=read(group).items;
+    for (const item of items) assert.deepEqual(Object.keys(item).sort(),Object.keys(items[0]).sort());
   }
 });

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: shinjo-lab-editor
+    runtime: node
+    plan: free
+    buildCommand: node --version
+    startCommand: node editor/server.mjs
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: EDIT_BRANCH
+        value: codex/member-news-cms
