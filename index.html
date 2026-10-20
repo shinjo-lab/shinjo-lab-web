@@ -1341,6 +1341,7 @@
         </div>
 
         <div id="g-main-content" class="g-main" style="display:none;">
+          <div id="g-sync-status" role="status" aria-live="polite" hidden style="margin:12px 0;padding:12px 16px;border-radius:10px;line-height:1.7;"></div>
           <header class="g-header">
             <h1>Gourmet</h1>
             <p>研究室メンバーのおすすめグルメマップ</p>
@@ -1951,36 +1952,82 @@
   let gRestaurants = [];
 
   // ===== Supabase SYNC =====
-  async function gLoadFromSheet() {
-    if (!SUPABASE_URL || !SUPABASE_KEY) { console.log('Supabase設定未設定'); gUseFallbackData(); gRenderAll(); return; }
-    try {
-      // レストラン情報とコメント一覧を最新順(created_at降順)に一括取得
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/restaurants?select=*,comments(*)&order=created_at.desc&comments.order=created_at.desc`, {
-        method: 'GET',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        }
-      });
-      const data = await res.json();
-      if (res.ok) {
-        gRestaurants = data;
-        gRestaurants.forEach(r => {
-          // 元のキャメルケースのプロパティを補完してフロントエンドを壊さないようにする
-          r.createdAt = r.created_at;
-          if (r.comments) {
-            r.comments.forEach(c => { c.createdAt = c.created_at; });
-          }
-          (r.scenes||[]).forEach(s => { if (!G_SCENES.includes(s)) G_SCENES.push(s); });
-          (r.reasons||[]).forEach(s => { if (!G_REASONS.includes(s)) G_REASONS.push(s); });
-        });
-      } else { gUseFallbackData(); }
-    } catch(e) { console.error('データ読み込みエラー:', e); gUseFallbackData(); }
-    gRenderAll();
+  let gLoadVersion = 0;
+  let gHasLoadedData = false;
+
+  function gNormalizeRestaurants(rows) {
+    if (!Array.isArray(rows)) throw Object.assign(new Error('店舗データの形式が正しくありません。'), { retryable: false });
+    return rows.map(row => {
+      if (!row || typeof row !== 'object' || row.id == null || row.id === '' || !Number.isSafeInteger(Number(row.id))) {
+        throw Object.assign(new Error('店舗データの形式が正しくありません。'), { retryable: false });
+      }
+      const strings = value => Array.isArray(value) ? value.filter(x => typeof x === 'string') : [];
+      return {
+        ...row, id: Number(row.id),
+        name: typeof row.name === 'string' ? row.name : '店名未設定',
+        recommender: typeof row.recommender === 'string' ? row.recommender : '推薦者未設定',
+        area: typeof row.area === 'string' ? row.area : '',
+        pref: typeof row.pref === 'string' ? row.pref : '',
+        photos: strings(row.photos), scenes: strings(row.scenes), reasons: strings(row.reasons),
+        createdAt: row.created_at,
+        comments: (Array.isArray(row.comments) ? row.comments : []).filter(c => c && typeof c === 'object').map(c => ({
+          ...c, name: typeof c.name === 'string' ? c.name : '匿名', text: typeof c.text === 'string' ? c.text : '', createdAt: c.created_at
+        }))
+      };
+    });
   }
 
-  function gUseFallbackData() {
-    gRestaurants = [];
+  async function gFetchRestaurants(timeoutMs = 15000) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/restaurants?select=*,comments(*)&order=created_at.desc&comments.order=created_at.desc', {
+          method: 'GET', signal: controller.signal, cache: 'no-store',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+        });
+        if (!res.ok) throw Object.assign(new Error('店舗データを取得できませんでした（HTTP ' + res.status + '）。'), { retryable: res.status === 408 || res.status === 429 || res.status >= 500 });
+        return gNormalizeRestaurants(await res.json());
+      } catch (error) {
+        if (attempt === 1 || error.retryable === false) throw error;
+      } finally { clearTimeout(timer); }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+
+  function gSetLoadStatus(message, failed = false) {
+    const banner = document.getElementById('g-sync-status');
+    banner.hidden = !message; banner.textContent = message;
+    banner.style.color = failed ? '#9b341f' : '#3f704c';
+    banner.style.background = failed ? '#fff1eb' : '#f4f8f4';
+  }
+
+  async function gLoadFromSheet() {
+    const version = ++gLoadVersion;
+    document.querySelectorAll('.g-refresh-btn').forEach(button => { button.disabled = true; });
+    if (!gHasLoadedData) {
+      gRenderAll();
+      ['g-stat-total', 'g-stat-members', 'g-stat-areas'].forEach(id => { document.getElementById(id).textContent = '—'; });
+      document.getElementById('g-no-results').style.display = 'none';
+    }
+    gSetLoadStatus('店舗データを読み込んでいます…');
+    try {
+      if (!SUPABASE_URL || !SUPABASE_KEY) throw Object.assign(new Error('接続設定を確認してください。'), { retryable: false });
+      const rows = await gFetchRestaurants();
+      if (version !== gLoadVersion) return;
+      rows.forEach(r => {
+        r.scenes.forEach(s => { if (!G_SCENES.includes(s)) G_SCENES.push(s); });
+        r.reasons.forEach(s => { if (!G_REASONS.includes(s)) G_REASONS.push(s); });
+      });
+      gRestaurants = rows; gHasLoadedData = true;
+      gRenderAll(); gSetLoadStatus('');
+    } catch (error) {
+      if (version !== gLoadVersion) return;
+      const code = /^店舗データを取得できませんでした（HTTP \d+）。$/.test(error.message) ? error.message : '店舗データを取得できませんでした。';
+      gSetLoadStatus(code + (gHasLoadedData ? ' 前回読み込んだ一覧を表示しています。' : ' 0件と確定したわけではありません。') + ' 接続状態を確認し、「データを更新」を押してください。', true);
+    } finally {
+      if (version === gLoadVersion) document.querySelectorAll('.g-refresh-btn').forEach(button => { button.disabled = false; });
+    }
   }
 
   async function gSaveToSheet(restaurant) {
@@ -2138,12 +2185,20 @@ let gEditMode = false;
     prefEl.innerHTML = '<option value="">都道府県：すべて</option>' + [...prefSet].sort().map(p => `<option value="${p}">${p}</option>`).join('');
     recEl.innerHTML = '<option value="">推薦者：すべて</option>' + [...recSet].sort().map(r => `<option value="${r}">${r}</option>`).join('');
     priceEl.innerHTML = '<option value="">値段：すべて</option>' + G_PRICE_OPTIONS.map(p => `<option value="${p}">${p}円</option>`).join('');
+    if (gActiveFilters.pref && !prefSet.has(gActiveFilters.pref)) gActiveFilters.pref = '';
+    if (gActiveFilters.recommender && !recSet.has(gActiveFilters.recommender)) gActiveFilters.recommender = '';
+    [[prefEl,'pref'],[recEl,'recommender'],[priceEl,'price']].forEach(([el,key]) => {
+      el.value = gActiveFilters[key]; el.className = 'g-filter-select' + (el.value ? ' active-filter' : '');
+    });
   }
 
   function gRenderFilterChips() {
     document.getElementById('g-category-chips').innerHTML = G_CATEGORIES.map(c => `<button class="g-chip g-chip-category" onclick="gToggleFilter('categories','${c}',this)">${G_CATEGORY_EMOJIS[c]?G_CATEGORY_EMOJIS[c]+' ':''}${c}</button>`).join('');
     document.getElementById('g-scene-chips').innerHTML = G_SCENES.map(s => `<button class="g-chip" onclick="gToggleFilter('scenes','${s}',this)">${s}</button>`).join('');
     document.getElementById('g-reason-chips').innerHTML = G_REASONS.map(r => `<button class="g-chip" onclick="gToggleFilter('reasons','${r}',this)">${r}</button>`).join('');
+    [['g-category-chips',G_CATEGORIES,'categories'],['g-scene-chips',G_SCENES,'scenes'],['g-reason-chips',G_REASONS,'reasons']].forEach(([id,values,key]) => {
+      document.querySelectorAll('#'+id+' .g-chip').forEach((el,index) => el.classList.toggle('active',gActiveFilters[key].has(values[index])));
+    });
   }
 
   function gRenderFormChips() {
@@ -2559,4 +2614,3 @@ async function gHandleSubmit(e){
     <script src="./assets/content.js" defer></script>
 </body>
 </html>
-
