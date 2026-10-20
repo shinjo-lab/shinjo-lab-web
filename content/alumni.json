@@ -1,6 +1,26 @@
 {
   "items": [
     {
+      "name": "久保 華奈多",
+      "name_en": "Kanata Kubo",
+      "role": "卒業生",
+      "role_en": "Alumni",
+      "photo": "/images/33.jpg",
+      "photo_position": "center",
+      "bio": "",
+      "bio_en": ""
+    },
+    {
+      "name": "水口 貴咲",
+      "name_en": "Kisaki Mizuguchi",
+      "role": "卒業生",
+      "role_en": "Alumni",
+      "photo": "/images/16.jpg",
+      "photo_position": "center",
+      "bio": "",
+      "bio_en": ""
+    },
+    {
       "name": "緒方 遥人",
       "name_en": "Haruto Ogata",
       "role": "卒業生",

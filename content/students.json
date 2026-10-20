@@ -1,31 +1,11 @@
 {
   "items": [
     {
-      "name": "水口 貴咲",
-      "name_en": "Kisaki Mizuguchi",
-      "role": "4年",
-      "role_en": "4th Year Student",
-      "photo": "/images/16.jpg",
-      "photo_position": "center",
-      "bio": "",
-      "bio_en": ""
-    },
-    {
       "name": "小川 朋",
       "name_en": "Tomo Ogawa",
       "role": "4年",
       "role_en": "4th Year Student",
       "photo": "/images/6.jpeg",
-      "photo_position": "center",
-      "bio": "",
-      "bio_en": ""
-    },
-    {
-      "name": "久保 華奈多",
-      "name_en": "Kanata Kubo",
-      "role": "4年",
-      "role_en": "4th Year Student",
-      "photo": "/images/33.jpg",
       "photo_position": "center",
       "bio": "",
       "bio_en": ""
