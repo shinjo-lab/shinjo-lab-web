@@ -1,16 +1,6 @@
 {
   "items": [
     {
-      "name": "淺井祐那",
-      "name_en": "",
-      "role": "2年",
-      "role_en": "2th Year Student",
-      "photo": "/images/cms/d4373616-0801-44b8-a76e-e18ddcb3e70d.jpg",
-      "photo_position": "center",
-      "bio": "",
-      "bio_en": ""
-    },
-    {
       "name": "安田朱里",
       "name_en": "Akari Yasuda",
       "role": "4年",
@@ -196,6 +186,16 @@
       "role": "3年",
       "role_en": "3rd Year Student",
       "photo": "/images/43.jpg.jpg",
+      "photo_position": "center",
+      "bio": "",
+      "bio_en": ""
+    },
+    {
+      "name": "淺井祐那",
+      "name_en": "",
+      "role": "2年",
+      "role_en": "2th Year Student",
+      "photo": "/images/cms/d4373616-0801-44b8-a76e-e18ddcb3e70d.jpg",
       "photo_position": "center",
       "bio": "",
       "bio_en": ""
