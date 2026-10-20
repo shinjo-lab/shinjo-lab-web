@@ -21,7 +21,8 @@ async function screen(data=fixture){
  const click=id=>node('form').events.click({target:{id}});
  const photo=()=>node('form').events.change({target:{id:'photo',files:[{type:'image/png',size:100}]}});
  const save=async()=>{click('save');for(let i=0;i<5;i++)await Promise.resolve();};
- return {node,readers,saves,click,photo,save};
+ const input=(field,value)=>node('form').events.input({target:{dataset:{field},value}});
+ return {node,readers,saves,click,photo,save,input};
 }
 const png='data:image/png;base64,'+Buffer.from([137,80,78,71,13,10,26,10]).toString('base64');
 
@@ -48,4 +49,19 @@ test('removing a photo while it loads does not restore it or upload unused bytes
 test('replacing a photo discards the unused upload and read errors release saving',async()=>{
  const ui=await screen();ui.photo();ui.readers[0].finish(png);ui.photo();ui.readers[1].finish(png);ui.photo();ui.readers[2].onerror();await ui.save();
  assert.equal(ui.saves.length,1);assert.equal(ui.saves[0].uploads.length,1);
+});
+
+test('students sort by descending year, keep ties stable, and retain all profiles',async()=>{
+ const students=[['二年','2年'],['四年A','4年'],['未入力',''],['一年','1年'],['四年B','４年生'],['三年','学部3年']].map(([name,role])=>({...fixture.students[0],name,role}));
+ const ui=await screen({...fixture,students});await ui.save();
+ assert.deepEqual(ui.saves[0].data.students.map(x=>x.name),['四年A','四年B','三年','二年','一年','未入力']);
+ for(const student of ui.saves[0].data.students)assert.deepEqual(student,students.find(x=>x.name===student.name));
+});
+test('new student sorts immediately after year input without switching the edited person',async()=>{
+ const ui=await screen({...fixture,students:[{...fixture.students[0],role:'4年'},{...fixture.students[0],name:'一年生',role:'1年'}]});
+ ui.node('add').events.click();ui.input('name','追加した学生');ui.input('role','2年');ui.input('bio','追加した人の紹介');await ui.save();
+ assert.deepEqual(ui.saves[0].data.students.map(x=>x.name),['試験用学生','追加した学生','一年生']);
+ assert.equal(ui.saves[0].data.students[1].bio,'追加した人の紹介');
+ ui.input('role','4年');ui.input('name','同じ学生のまま');await ui.save();
+ assert.deepEqual(ui.saves[1].data.students.map(x=>x.name),['試験用学生','同じ学生のまま','一年生']);
 });

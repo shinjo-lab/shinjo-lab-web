@@ -12,6 +12,8 @@ const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,
 function value(item,jp,en){return language==='en'?(item[en]||item[jp]||''):(item[jp]||'');}
 function imageUrl(src){if(photoPreviews.has(src))return photoPreviews.get(src);if(/^\/images\/[\w./% -]+$/i.test(src||''))return 'https://shinjo-lab.com'+src;return '';}
 function current(){return data[group][selected];}
+function studentGrade(item){const match=String(item.role||'').normalize('NFKC').match(/^\s*(?:学部\s*)?([1-6])\s*年/);return match?Number(match[1]):0;}
+function sortStudents(member){data.students.sort((a,b)=>studentGrade(b)-studentGrade(a));if(member&&group==='students')selected=data.students.indexOf(member);}
 function status(text){$('status').textContent=text;}
 function changed(){dirty=true;}
 function saveLabel(){return state.branch==='main'?'保存して公開':'GitHubに保存（テスト用）';}
@@ -35,7 +37,7 @@ function renderPreview(){const news=group==='news';$('preview-title').textConten
 function render(){renderList();renderForm();renderPreview();document.querySelectorAll('nav [data-group]').forEach(x=>x.classList.toggle('active',x.dataset.group===group));}
 document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('[data-group]');if(b){group=b.dataset.group;selected=0;status('');render();}});
 $('items').addEventListener('click',e=>{const b=e.target.closest('[data-index]');if(b){selected=Number(b.dataset.index);status('');renderList();renderForm();}});
-$('form').addEventListener('input',e=>{changed();if(e.target.dataset.field){current()[e.target.dataset.field]=e.target.value;renderList();renderPreview();status('プレビューに反映しました（未保存）');}if(e.target.dataset.category){current().categories=[...$('form').querySelectorAll('[data-category]:checked')].map(x=>x.dataset.category);renderPreview();status('プレビューに反映しました（未保存）');}});
+$('form').addEventListener('input',e=>{changed();if(e.target.dataset.field){const edited=current();edited[e.target.dataset.field]=e.target.value;if(group==='students'&&e.target.dataset.field==='role')sortStudents(edited);renderList();renderPreview();status('プレビューに反映しました（未保存）');}if(e.target.dataset.category){current().categories=[...$('form').querySelectorAll('[data-category]:checked')].map(x=>x.dataset.category);renderPreview();status('プレビューに反映しました（未保存）');}});
 $('form').addEventListener('change',e=>{
  if(e.target.id==='photo-position'){changed();current().photo_position=e.target.value;renderPreview();status('写真の表示位置を変更しました（未保存）');}
  if(e.target.id==='photo'){
@@ -54,7 +56,7 @@ $('form').addEventListener('change',e=>{
  }
 });
 $('form').addEventListener('click',e=>{if(e.target.id==='graduate'){graduateStudent();}if(e.target.id==='save'){save();}if(e.target.id==='delete'){ask('この項目を削除しますか？','「'+(current().name||current().title||'項目')+'」を一覧から削除します。保存するまではGitHubに反映されません。',()=>{changed();data[group].splice(selected,1);selected=Math.max(0,selected-1);prunePhotos();render();status('一覧から削除しました（未保存）');},'削除する');}if(e.target.id==='remove-photo'){changed();photoReads.delete(current());current().photo='';prunePhotos();renderPreview();status('写真を外しました（未保存）');}});
-$('add').addEventListener('click',()=>{changed();const today=new Date(),date=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');data[group].unshift(group==='news'?{title:'新しいニュース',title_en:'',date,categories:['news'],body:'ここにニュースの本文を入力してください。',body_en:'',photo:'',photo_alt:'',url:'',link_label:'',link_label_en:''}:{name:'新しいメンバー',name_en:'',role:group==='alumni'?'卒業生':'',role_en:'',photo:'',photo_position:'center',bio:'',bio_en:''});selected=0;render();status('追加しました。内容を入力してください（未保存）');});
+$('add').addEventListener('click',()=>{changed();const today=new Date(),date=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');data[group].unshift(group==='news'?{title:'新しいニュース',title_en:'',date,categories:['news'],body:'ここにニュースの本文を入力してください。',body_en:'',photo:'',photo_alt:'',url:'',link_label:'',link_label_en:''}:{name:'新しいメンバー',name_en:'',role:group==='alumni'?'卒業生':'',role_en:'',photo:'',photo_position:'center',bio:'',bio_en:''});selected=0;if(group==='students')sortStudents(current());render();status('追加しました。内容を入力してください（未保存）');});
 $('language').addEventListener('change',e=>{language=e.target.value;renderPreview();});
 function ask(title,text,action,confirmLabel='実行する'){$('confirm-title').textContent=title;$('confirm-text').textContent=text;$('do-confirm').textContent=confirmLabel;$('do-confirm').classList.toggle('danger',confirmLabel==='削除する');pendingAction=action;$('confirm').showModal();}
 $('cancel-confirm').onclick=()=>{$('confirm').close();pendingAction=null;};$('do-confirm').onclick=()=>{$('confirm').close();if(pendingAction)pendingAction();pendingAction=null;};
@@ -75,4 +77,5 @@ async function save(){
  finally{saving=false;controls.forEach(x=>x.disabled=false);}
 }
 $('connection-notice').textContent='ログイン中：'+state.login+' ／ '+state.repository+' ／ 保存先：'+state.branch+(state.branch==='main'?'（保存すると公開対象になります）':'（テスト用・公開サイトには反映されません）');
+sortStudents();
 render();
