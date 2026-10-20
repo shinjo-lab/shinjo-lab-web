@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "name": "安田朱里",
+      "name_en": "Akari Yasuda",
+      "role": "4年",
+      "role_en": "4th Year Student",
+      "photo": "/images/cms/2657d3bd-7d1c-41b8-8f10-500aeb90a9d0.jpg",
+      "photo_position": "center",
+      "bio": "",
+      "bio_en": ""
+    },
+    {
       "name": "小川 朋",
       "name_en": "Tomo Ogawa",
       "role": "4年",
