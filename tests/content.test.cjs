@@ -6,12 +6,11 @@ const {member,article,safeUrl,validate,load} = require('../assets/content.js');
 const root = path.join(__dirname,'..');
 const read = group => JSON.parse(fs.readFileSync(path.join(root,`content/${group}.json`),'utf8'));
 
-test('all existing editable records migrate with names, dates and images intact', () => {
+test('editable records remain consistent with public HTML as membership changes', () => {
   const html = fs.readFileSync(path.join(root,'index.html'),'utf8');
   assert.ok(!/<[^>]+\bid="[^"]*"[^>]+\bid=/.test(html),'HTML elements must not have two IDs');
-  for (const [group,count] of Object.entries({staff:3,students:24,alumni:3,news:10})) {
+  for (const group of ['staff','students','alumni','news']) {
     const items = validate(read(group),group);
-    assert.equal(items.length,count);
     assert.equal(html.match(new RegExp(`id="cms-${group}"`,'g')).length,1);
     for (const item of items) {
       assert.ok(item[group === 'news' ? 'title' : 'name'].trim());
