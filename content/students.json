@@ -111,16 +111,6 @@
       "bio_en": ""
     },
     {
-      "name": "坂口 芹",
-      "name_en": "Seri Sakaguchi",
-      "role": "4年",
-      "role_en": "4th Year Student",
-      "photo": "/images/48.jpeg.jpeg",
-      "photo_position": "center",
-      "bio": "",
-      "bio_en": ""
-    },
-    {
       "name": "小野 侑誠",
       "name_en": "Yusei Ono",
       "role": "3年",
@@ -226,6 +216,16 @@
       "role": "2年",
       "role_en": "2nd Year Student",
       "photo": "/images/41.jpg",
+      "photo_position": "center",
+      "bio": "",
+      "bio_en": ""
+    },
+    {
+      "name": "新しいメンバ",
+      "name_en": "",
+      "role": "",
+      "role_en": "",
+      "photo": "",
       "photo_position": "center",
       "bio": "",
       "bio_en": ""

@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "name": "坂口 芹",
+      "name_en": "Seri Sakaguchi",
+      "role": "卒業生",
+      "role_en": "Alumni",
+      "photo": "/images/48.jpeg.jpeg",
+      "photo_position": "center",
+      "bio": "",
+      "bio_en": ""
+    },
+    {
       "name": "久保 華奈多",
       "name_en": "Kanata Kubo",
       "role": "卒業生",
