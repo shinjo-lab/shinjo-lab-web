@@ -181,6 +181,16 @@
       "bio_en": ""
     },
     {
+      "name": "野口絵子",
+      "name_en": "Eko noguchi",
+      "role": "3年",
+      "role_en": "3th Year Student",
+      "photo": "/images/cms/8658da4d-0adc-46ea-b08e-24beb21acefa.jpg",
+      "photo_position": "center",
+      "bio": "",
+      "bio_en": ""
+    },
+    {
       "name": "淺井祐那",
       "name_en": "Yuna Asai",
       "role": "2年",
@@ -216,16 +226,6 @@
       "role": "2年",
       "role_en": "2nd Year Student",
       "photo": "/images/41.jpg",
-      "photo_position": "center",
-      "bio": "",
-      "bio_en": ""
-    },
-    {
-      "name": "新しいメンバ",
-      "name_en": "",
-      "role": "",
-      "role_en": "",
-      "photo": "",
       "photo_position": "center",
       "bio": "",
       "bio_en": ""
